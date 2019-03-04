@@ -3,17 +3,43 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "lint": "xo",
+    "dev": "nodemon index.js -w lib"
+  },
+  "engines": {
+    "node": ">= 8.15.0"
   },
   "dependencies": {
-    "cors": "^2.8.4",
-    "debug": "^3.1.0",
-    "express": "^4.16.2",
+    "connect-session-knex": "^1.4.0",
+    "cookie": "^0.3.1",
+    "cors": "^2.8.5",
+    "debug": "^4.1.1",
+    "express": "^4.16.4",
     "express-session": "^1.15.6",
-    "hbs": "^4.0.1",
-    "morgan": "^1.9.0",
+    "knex": "^0.16.3",
+    "lodash.get": "^4.4.2",
+    "matcher": "^1.0.0",
+    "morgan": "^1.9.1",
     "passport": "^0.4.0",
-    "passport-google-oauth20": "^1.0.0",
-    "session-file-store": "^1.2.0"
+    "passport-google-oauth20": "^2.0.0"
+  },
+  "devDependencies": {
+    "got": "^9.6.0",
+    "nodemon": "^1.18.10",
+    "xo": "^0.24.0"
+  },
+  "optionalDependencies": {
+    "sqlite3": "^4.0.6"
+  },
+  "xo": {
+    "rules": {
+      "func-names": [
+        "error",
+        "as-needed"
+      ],
+      "func-name-matching": "off",
+      "unicorn/prefer-spread": "off"
+    }
   }
 }
