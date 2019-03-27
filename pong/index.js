@@ -30,13 +30,19 @@ app.get('/token', async (req, res) => {
 		let redirect = '/';
 		try {
 			redirect = new URL(then, LISTENING).pathname;
-		} catch (_) { }
+		} catch (_) {}
+
 		res.cookie(COOKIE, body.cookie).redirect(redirect);
 	} else if (body.code === 404) {
 		res.end('token not found');
 	} else {
 		res.end(JSON.stringify(body));
 	}
+});
+
+app.use('/logout', async (_, res) => {
+	res.cookie(COOKIE, '', {maxAge: Date.now() - 10, overwrite: true});
+	res.end('logged out');
 });
 
 app.use(async (req, res) => {
@@ -46,9 +52,11 @@ app.use(async (req, res) => {
 	}
 
 	const requestURL = `${LISTENING}${req.originalUrl}`;
-	const {body} = await wrapGot(`${API_ROOT}/rest/${requestURL}`, {headers: {
-		cookie: cookie.serialize(COOKIE, cookies[COOKIE])
-	}});
+	const {body} = await wrapGot(`${API_ROOT}/rest/${requestURL}`, {
+		headers: {
+			cookie: cookie.serialize(COOKIE, cookies[COOKIE])
+		}
+	});
 
 	if (body.code === 401) {
 		res.redirect(`${AUTH_URL}/?then=${req.path}`);
