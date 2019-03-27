@@ -1,7 +1,10 @@
 const VALID_TOKEN = new RegExp('[a-z0-9]{128}');
 const API_ROOT = 'http://dev.vikaspotluri.ml:3000/api/v1';
 const LISTENING = 'http://pong.vikaspotluri.ml:2950';
+const AUTH_URL = `${API_ROOT}/authenticate?redirect=${LISTENING}/token`;
 const COOKIE = 'private.auth.sid';
+
+const {URL} = require('url');
 const app = require('express')();
 const got = require('got');
 const cookie = require('cookie');
@@ -12,7 +15,7 @@ const wrapGot = (url, options = {}) => {
 };
 
 app.get('/token', async (req, res) => {
-	const {token} = req.query;
+	const {token, then} = req.query;
 
 	if (!VALID_TOKEN.test(token)) {
 		return res.end('reject');
@@ -24,8 +27,11 @@ app.get('/token', async (req, res) => {
 	}
 
 	if (body.code === 200) {
-		res.cookie(COOKIE, body.cookie);
-		res.redirect('/');
+		let redirect = '/';
+		try {
+			redirect = new URL(then, LISTENING).pathname;
+		} catch (_) { }
+		res.cookie(COOKIE, body.cookie).redirect(redirect);
 	} else if (body.code === 404) {
 		res.end('token not found');
 	} else {
@@ -36,7 +42,7 @@ app.get('/token', async (req, res) => {
 app.use(async (req, res) => {
 	const cookies = cookie.parse(req.headers.cookie || '');
 	if (!cookies[COOKIE]) {
-		res.redirect(`${API_ROOT}/authenticate?redirect=http://pong.vikaspotluri.ml:2950/token`);
+		return res.redirect(`${AUTH_URL}?then=${req.path}`);
 	}
 
 	const requestURL = `${LISTENING}${req.originalUrl}`;
@@ -44,7 +50,9 @@ app.use(async (req, res) => {
 		cookie: cookie.serialize(COOKIE, cookies[COOKIE])
 	}});
 
-	if (body.code === 403) {
+	if (body.code === 401) {
+		res.redirect(`${AUTH_URL}/?then=${req.path}`);
+	} else if (body.code === 403) {
 		res.end('Permission denied');
 	} else if (body.code === 200) {
 		res.end('hello!');
