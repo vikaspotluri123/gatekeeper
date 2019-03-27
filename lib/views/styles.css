@@ -1,6 +1,7 @@
 :root {
 	--white: #fcfcfc;
 	--black: rgba(25, 25, 25, 0.85);
+	--green: rgba(25, 150, 25, 0.8);
 }
 
 body {
@@ -44,6 +45,7 @@ a {
 }
 
 .btn {
+	font-size: 1.05rem;
 	padding: 0.5em 2.5em;
 	background: transparent;
 	border: 2.5px solid var(--black);
@@ -66,4 +68,14 @@ footer {
 	font-size: 1rem;
 	line-height: 1.5rem;
 	color: var(--white);
+}
+
+.ptr {
+	cursor: pointer;
+}
+
+.btn.green:focus,
+.btn.green:hover {
+	border-color: var(--green);
+	background: var(--green);
 }
