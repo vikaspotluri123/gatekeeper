@@ -13,6 +13,7 @@ async function startServer() {
 }
 
 module.exports = startServer;
+module.exports.app = createApp;
 
 if (!module.parent) {
 	startServer();
