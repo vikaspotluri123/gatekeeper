@@ -1,3 +1,9 @@
+/*
+ * PONG
+ * Very basic express server to serve as a client consumer from the auth server, useful for testing and demo
+ * Listens on port 2950. Both auth-server.vikaspotluri.ml and auth-client.vikaspotluri.ml point to localhost,
+ *  so you shouldn't need to configure anything here :)
+*/
 const VALID_TOKEN = new RegExp('[a-z0-9]{128}');
 const API_ROOT = 'http://auth-server.vikaspotluri.ml:3000/api/v1';
 const LISTENING = 'http://auth-client.vikaspotluri.ml:2950';
@@ -14,43 +20,63 @@ const wrapGot = (url, options = {}) => {
 	return got(url, options).catch(e => e); // eslint-disable-line unicorn/catch-error-name
 };
 
+/*
+* Token endpoint - receives a token from auth-server via the client.
+*    This token is then sent to the auth-server directly in order to
+*    the user's cookie. The server cookie that's received is sent to
+*    user as a client cookie with the same name.
+*/
 app.get('/token', async (req, res) => {
 	const {token, then} = req.query;
 
+	// Tokens are 128 character hex strings
 	if (!VALID_TOKEN.test(token)) {
 		return res.end('reject');
 	}
 
+	// Make the request to the auth server with the provided token
 	const {body} = await wrapGot(`${API_ROOT}/token/${token}`);
+
+	// If the server doesn't respond with a JSON, there's not much that can be done :/
 	if (!body) {
 		res.end('unexpected error');
 	}
 
+	// CASE: Token was successfully swapped
 	if (body.code === 200) {
 		let redirect = '/';
 		try {
+			// Attempt to update the redirect URL based on the `then` query param. If something is malformed,
+			// the redirect will fall back to `/`
 			redirect = new URL(then, LISTENING).pathname;
 		} catch (_) {}
 
+		// Update the client cookie with the same name / value that the server uses
 		res.cookie(COOKIE, body.cookie).redirect(redirect);
+	// CASE: Invalid token
 	} else if (body.code === 404) {
 		res.end('token not found');
+	// CASE: Something weird happened - log it
 	} else {
 		res.end(JSON.stringify(body));
 	}
 });
 
+// Log the user out - clear the cookie and end with a success message
 app.use('/logout', async (_, res) => {
 	res.cookie(COOKIE, '', {maxAge: Date.now() - 10, overwrite: true});
 	res.end('logged out');
 });
 
+// Handle all other endpoints - validate access and proceed
 app.use(async (req, res) => {
 	const cookies = cookie.parse(req.headers.cookie || '');
+	// CASE: cookie is not set - there's no point in hitting the server endpoint because it's going to faile
 	if (!cookies[COOKIE]) {
 		return res.redirect(`${AUTH_URL}?then=${req.path}`);
 	}
 
+	// Validate the user has permission to access the requested endpoint
 	const requestURL = `${LISTENING}${req.originalUrl}`;
 	const {body} = await wrapGot(`${API_ROOT}/rest/${requestURL}`, {
 		headers: {
@@ -58,12 +84,16 @@ app.use(async (req, res) => {
 		}
 	});
 
+	// CASE: cookie expired
 	if (body.code === 401) {
 		res.redirect(`${AUTH_URL}/?then=${req.path}`);
+	// Case: user does not have access
 	} else if (body.code === 403) {
 		res.end('Permission denied');
+	// CASE: user does have permission
 	} else if (body.code === 200) {
 		res.end('hello!');
+	// CASE: something happened to the server. Log the message
 	} else {
 		res.end(JSON.stringify(body));
 	}
