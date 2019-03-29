@@ -1,6 +1,6 @@
 const VALID_TOKEN = new RegExp('[a-z0-9]{128}');
-const API_ROOT = 'http://dev.vikaspotluri.ml:3000/api/v1';
-const LISTENING = 'http://pong.vikaspotluri.ml:2950';
+const API_ROOT = 'http://auth-server.vikaspotluri.ml:3000/api/v1';
+const LISTENING = 'http://auth-client.vikaspotluri.ml:2950';
 const AUTH_URL = `${API_ROOT}/authenticate?redirect=${LISTENING}/token`;
 const COOKIE = 'private.auth.sid';
 
