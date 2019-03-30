@@ -1,70 +1,63 @@
 <!DOCTYPE html>
-
 <html lang="en-us">
-{% include head.html %}
-<body>
-
-  <div class="page-wrap">
-	<div class="side-bar">
-		<a href="{{ site.url }}{{ site.baseurl }}" class="site-title fs-6 lh-tight">{{ site.title }}</a>
-		<span class="fs-3"><button class="js-main-nav-trigger navigation-list-toggle btn btn-outline" type="button"
-				data-text-toggle="Hide">Menu</button></span>
-		<div class="navigation main-nav js-main-nav">
-			{% include nav.html %}
+	{% include head.html %}
+	<body>
+		<div class="page-wrap">
+			<aside class="side-bar">
+				<a href="{{'/' | absolute_url}}" class="site-title fs-6 lh-tight">{{site.title}}</a>
+				<span class="fs-3">
+					<button
+						class="js-main-nav-trigger navigation-list-toggle btn btn-outline"
+					>
+						Menu
+					</button>
+				</span>
+				<div class="navigation main-nav js-main-nav">{% include nav.html %}</div>
+			</aside>
+			<div class="main-content-wrap js-main-content">
+				<div class="page-header">
+					<div class="main-content">
+						<ul class="list-style-none text-small mt-md-1 mb-md-1 pb-4 pb-md-0 js-aux-nav aux-nav">
+							<li class="d-inline-block my-0">
+								<a href="https://github.com/vikaspotluri123/gatekeeper">GitHub</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="main-content">
+					{% unless page.url == "/" %}{% if page.parent %}
+					<nav class="breadcrumb-nav">
+						<ol class="breadcrumb-nav-list">
+							{% if page.grandParent %}
+							<li class="breadcrumb-nav-list-item"><a href="{{primaryURL}}">{{page.grandParent}}</a></li>
+							<li class="breadcrumb-nav-list-item"><a href="{{secondaryURL}}">{{page.parent}}</a></li>
+							{% else %}
+							<li class="breadcrumb-nav-list-item"><a href="{{primaryURL}}">{{page.parent}}</a></li>
+							{% endif %}
+							<li class="breadcrumb-nav-list-item"><span>{{page.title}}</span></li>
+						</ol>
+					</nav>
+					{% endif %}{% endunless %}
+					<main id="main-content" class="page-content">
+						{{content}}
+						{% if page.hasChildren == true and page.hasTOC != false %}
+						{% assign children = site.pages | sort:"navOrder" %}
+						<ul>
+							{% for child in children %}
+								{% if child.parent == page.title and child.title != page.title %}
+								<li><a href="{{child.url | absolute_url}}">{{child.title}}</a></li>
+								{% endif %}
+							{% endfor %}
+						</ul>
+						{% endif %}
+					</main>
+					<footer class="site-footer">
+						<p class="text-small text-center text-grey-dk-000">Docs use a modified version of
+							<a href="https://github.com/pmarsceill/just-the-docs" target="_blank" rel="noopener noreferrer">Just the Docs</a>.
+						</p>
+					</footer>
+				</div>
+			</div>
 		</div>
-	</div>
-    <div class="main-content-wrap js-main-content">
-      <div class="page-header">
-        <div class="main-content">
-          {% if site.aux_links != nil %}
-            <ul class="list-style-none text-small mt-md-1 mb-md-1 pb-4 pb-md-0 js-aux-nav aux-nav">
-              {% for link in site.aux_links %}
-                <li class="d-inline-block my-0{% unless forloop.last %} mr-2{% endunless %}"><a href="{{ link.last }}">{{ link.first }}</a></li>
-              {% endfor %}
-            </ul>
-          {% endif %}
-        </div>
-      </div>
-      <div class="main-content">
-        {% unless page.url == "/" %}
-          {% if page.parent %}
-            <nav class="breadcrumb-nav">
-              <ol class="breadcrumb-nav-list">
-                {% if page.grand_parent %}
-                  <li class="breadcrumb-nav-list-item"><a href="{{ first_level_url }}">{{ page.grand_parent }}</a></li>
-                  <li class="breadcrumb-nav-list-item"><a href="{{ second_level_url }}">{{ page.parent }}</a></li>
-                {% else %}
-                  <li class="breadcrumb-nav-list-item"><a href="{{ first_level_url }}">{{ page.parent }}</a></li>
-                {% endif %}
-                <li class="breadcrumb-nav-list-item"><span>{{ page.title }}</span></li>
-              </ol>
-            </nav>
-          {% endif %}
-        {% endunless %}
-        <div id="main-content" class="page-content" role="main">
-          {{ content }}
-
-          {% if page.has_children == true and page.has_toc != false %}
-          {% assign children_list = site.pages | sort:"nav_order" %}
-          <ul>
-            {% for child in children_list %}
-              {% if child.parent == page.title and child.title != page.title %}
-              <li>
-                <a href="{{ child.url | absolute_url }}">{{ child.title }}</a>
-              </li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-          {% endif %}
-		</div>
-		<footer class="site-footer">
-			<p class="text-small text-center text-grey-dk-000">Docs use a modified version of
-				<a href="https://github.com/pmarsceill/just-the-docs" target="_blank" rel="noopener noreferrer">Just the Docs</a>.
-			</p>
-		</footer>
-	  </div>
-	</div>
-  </div>
-
-</body>
+	</body>
 </html>
