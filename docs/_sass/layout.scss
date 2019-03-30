@@ -62,8 +62,6 @@
   @include mq(md) {
     position: relative;
     max-width: $content-width;
-    padding-top: $gutter-spacing;
-    padding-bottom: $gutter-spacing;
     padding-left: $gutter-spacing * 1.5;
     margin-left: $nav-width;
   }
@@ -100,8 +98,7 @@
 }
 
 .navigation,
-.site-title,
-.site-footer {
+.site-title {
 
   @include container;
 
@@ -117,31 +114,5 @@
     padding-top: $sp-8;
     overflow-y: auto;
     flex: 1 1 auto;
-  }
-}
-
-// stylelint-disable selector-no-type
-body {
-  position: relative;
-  padding-bottom: $sp-10;
-
-  @include mq(md) {
-    position: static;
-    padding-bottom: 0;
-  }
-}
-// stylelint-enable selector-no-type
-
-.site-footer {
-  position: absolute;
-  bottom: 0;
-  padding-top: $sp-4;
-  padding-bottom: $sp-4;
-
-  @include mq(md) {
-    position: static;
-    align-self: flex-end;
-    justify-self: end;
-    background-color: $sidebar-color;
   }
 }

@@ -5,17 +5,15 @@
 <body>
 
   <div class="page-wrap">
-    <div class="side-bar">
-      <a href="{{ site.url }}{{ site.baseurl }}" class="site-title fs-6 lh-tight">{{ site.title }}</a>
-      <span class="fs-3"><button class="js-main-nav-trigger navigation-list-toggle btn btn-outline" type="button" data-text-toggle="Hide">Menu</button></span>
-      <div class="navigation main-nav js-main-nav">
-        {% include nav.html %}
-      </div>
-      <footer role="contentinfo" class="site-footer">
-        <p class="text-small text-grey-dk-000 mb-0">This site uses <a href="https://github.com/pmarsceill/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.</p>
-      </footer>
-    </div>
-    <div class="main-content-wrap js-main-content" tabindex="0">
+	<div class="side-bar">
+		<a href="{{ site.url }}{{ site.baseurl }}" class="site-title fs-6 lh-tight">{{ site.title }}</a>
+		<span class="fs-3"><button class="js-main-nav-trigger navigation-list-toggle btn btn-outline" type="button"
+				data-text-toggle="Hide">Menu</button></span>
+		<div class="navigation main-nav js-main-nav">
+			{% include nav.html %}
+		</div>
+	</div>
+    <div class="main-content-wrap js-main-content">
       <div class="page-header">
         <div class="main-content">
           {% if site.aux_links != nil %}
@@ -58,9 +56,14 @@
             {% endfor %}
           </ul>
           {% endif %}
-        </div>
-      </div>
-    </div>
+		</div>
+		<footer class="site-footer">
+			<p class="text-small text-center text-grey-dk-000">Docs use a modified version of
+				<a href="https://github.com/pmarsceill/just-the-docs" target="_blank" rel="noopener noreferrer">Just the Docs</a>.
+			</p>
+		</footer>
+	  </div>
+	</div>
   </div>
 
 </body>
