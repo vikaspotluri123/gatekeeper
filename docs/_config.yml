@@ -24,3 +24,5 @@ exclude: ["node_modules/", "package.json", "package-lock.json",  "script/", "lib
 # Aux links for the upper right navigation
 aux_links:
   "GitHub": "https://github.com/vikaspotluri123/gatekeeper"
+sass:
+  style: compressed
