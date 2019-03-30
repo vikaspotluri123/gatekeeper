@@ -97,7 +97,7 @@
   }
 }
 
-.navigation,
+.nav,
 .site-title {
 
   @include container;
@@ -109,7 +109,7 @@
   }
 }
 
-.navigation {
+.nav {
   @include mq(md) {
     padding-top: $sp-8;
     overflow-y: auto;
