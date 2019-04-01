@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Examples
-navOrder: 2
+nav_order: 4
 hasChildren: true
 description: Learn how to integrate GateKeeper with some code and configuration examples
 permalink: /examples

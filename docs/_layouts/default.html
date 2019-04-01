@@ -37,7 +37,7 @@
 					<main id="main-content" class="page-content">
 						{{content}}
 						{% if page.hasChildren == true and page.hasTOC != false %}
-						{% assign children = site.pages | sort:"navOrder" %}
+						{% assign children = site.pages | sort:"nav_order" %}
 						<ul>
 							{% for child in children %}
 								{% if child.parent == page.title and child.title != page.title %}
