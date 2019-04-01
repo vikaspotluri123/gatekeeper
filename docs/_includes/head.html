@@ -14,5 +14,9 @@
 		</script>
 		<script async src="https://www.google-analytics.com/analytics.js"></script>
 	{% endif %}
-	<script type="text/javascript" src="{{ '/assets/js/scripts.js' | absolute_url }}"></script>
+	<script type="text/javascript" src="{{ '/assets/js/scripts.js' | absolute_url }}" async></script>
+	<script type="text/javascript" src="{{ '/assets/js/turbolinks.js' | absolute_url }}" async defer></script>
+	{% if page.lightbox %}
+	<script src="{{'/assets/js/lightbox.js' | absolute_url}}" async defer></script>
+	{% endif %}
 </head>
