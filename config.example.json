@@ -2,7 +2,8 @@
 	"google": {
 		"clientID": "numbers-letters.apps.googleusercontent.com",
 		"clientSecret": "raNDoMLeTteRsAnDNumB3rS",
-		"callbackURL": "http://your.domain/login/callback"
+		"callbackURL": "https://auth.your.domain/login/callback"
 	},
+	"cookieDomain": "your.domain",
 	"port": 3000
 }
