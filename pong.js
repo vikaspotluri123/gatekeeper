@@ -4,7 +4,7 @@
  * Listens on port 2950. Both auth-server.vikaspotluri.ml and auth-client.vikaspotluri.ml point to localhost,
  *  so you shouldn't need to configure anything here :)
 */
-const VALID_TOKEN = new RegExp('[a-z0-9]{128}');
+const VALID_TOKEN = /[a-z0-9]{128}/;
 const API_ROOT = 'http://auth-server.vikaspotluri.ml:3000/api/v1';
 const LISTENING = 'http://auth-client.vikaspotluri.ml:2950';
 const AUTH_URL = `${API_ROOT}/authenticate?redirect=${LISTENING}/token`;
