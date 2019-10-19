@@ -1,5 +1,5 @@
 {
-	"baseUrl": "/",
+	"basePath": "/",
 	"google": {
 		"clientID": "numbers-letters.apps.googleusercontent.com",
 		"clientSecret": "raNDoMLeTteRsAnDNumB3rS",
