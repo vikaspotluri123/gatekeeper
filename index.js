@@ -2,7 +2,7 @@ const createApp = require('./lib');
 const config = require('./lib/config');
 
 async function startServer() {
-	const app = await createApp();
+	const {app} = await createApp();
 
 	const port = process.env.PORT || config.get('port', '3000');
 
