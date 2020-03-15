@@ -27,7 +27,7 @@
   "devDependencies": {
     "got": "^10.6.0",
     "nodemon": "^2.0.2",
-    "xo": "^0.25.3"
+    "xo": "^0.28.0"
   },
   "optionalDependencies": {
     "sqlite3": "^4.1.0"
@@ -38,6 +38,8 @@
         "error",
         "as-needed"
       ],
+      "unicorn/prevent-abbreviations": "off",
+      "unicorn/string-content": "off",
       "func-name-matching": "off",
       "unicorn/prefer-spread": "off"
     }
