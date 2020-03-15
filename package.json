@@ -11,22 +11,22 @@
     "node": ">= 8.15.0"
   },
   "dependencies": {
-    "connect-session-knex": "^1.4.0",
+    "connect-session-knex": "^1.6.0",
     "cookie": "^0.4.0",
     "cors": "^2.8.5",
     "debug": "^4.1.1",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
-    "knex": "^0.19.5",
+    "knex": "^0.20.11",
     "lodash.get": "^4.4.2",
-    "matcher": "^2.0.0",
+    "matcher": "^2.1.0",
     "morgan": "^1.9.1",
-    "passport": "^0.4.0",
+    "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0"
   },
   "devDependencies": {
-    "got": "^9.6.0",
-    "nodemon": "^1.19.4",
+    "got": "^10.6.0",
+    "nodemon": "^2.0.2",
     "xo": "^0.25.3"
   },
   "optionalDependencies": {
