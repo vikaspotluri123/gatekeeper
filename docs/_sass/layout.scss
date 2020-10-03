@@ -4,71 +4,71 @@
 
 .page-wrap {
   @include mq(md) {
-    position: absolute;
-    top: 0;
-    left: 0;
     display: flex;
-    width: 100%;
     height: 100%;
+    left: 0;
     overflow-x: hidden;
     overflow-y: hidden;
+    position: absolute;
+    top: 0;
+    width: 100%;
   }
 }
 
 .side-bar {
-  z-index: 100;
+  background-color: $sidebar-color;
   display: flex;
   flex-wrap: wrap;
-  padding-top: $gutter-spacing-sm;
   padding-bottom: $gutter-spacing-sm;
-  background-color: $sidebar-color;
+  padding-top: $gutter-spacing-sm;
+  z-index: 100;
 
   @include mq(md) {
+    align-items: flex-end;
+    border-right: $border $border-color;
+    flex-direction: column;
     flex-wrap: nowrap;
+    height: 100%;
+    padding-bottom: 0;
+    padding-top: $gutter-spacing * 2;
     position: absolute;
     width: $nav-width + 16px;
-    height: 100%;
-    padding-top: $gutter-spacing * 2;
-    padding-bottom: 0;
-    flex-direction: column;
-    border-right: $border $border-color;
-    align-items: flex-end;
   }
 
   @include mq(lg) {
-    width: calc((100% - #{$nav-width + $content-width}) / 2 + #{$nav-width});
     min-width: $nav-width;
+    width: calc((100% - #{$nav-width + $content-width}) / 2 + #{$nav-width});
   }
 }
 
 .main-content-wrap {
   @include mq(md) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
     height: 100%;
+    left: 0;
     min-height: 600px;
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
     overflow-y: scroll;
+    position: absolute;
+    top: 0;
+    width: 100%;
   }
 }
 
 .main-content {
-  padding-top: $gutter-spacing-sm;
   @include container;
+  padding-top: $gutter-spacing-sm;
 
   @include mq(md) {
-    position: relative;
+    margin-left: $nav-width;
     max-width: $content-width;
     padding-left: $gutter-spacing * 1.5;
-    margin-left: $nav-width;
+    position: relative;
   }
 
   @include mq(lg) {
-    padding-left: $gutter-spacing;
     margin-left: calc((100% - #{$nav-width + $content-width}) / 2 + #{$nav-width});
+    padding-left: $gutter-spacing;
   }
 }
 
@@ -87,12 +87,12 @@
     padding-top: 0;
 
     @include mq(md) {
-      display: flex;
-      justify-content: flex-end;
-      height: 60px;
-      padding-top: $sp-4;
-      padding-bottom: $sp-4;
       border-bottom: $border $border-color;
+      display: flex;
+      height: 60px;
+      justify-content: flex-end;
+      padding-bottom: $sp-4;
+      padding-top: $sp-4;
     }
   }
 }
@@ -111,8 +111,8 @@
 
 .nav {
   @include mq(md) {
-    padding-top: $sp-8;
-    overflow-y: auto;
     flex: 1 1 auto;
+    overflow-y: auto;
+    padding-top: $sp-8;
   }
 }

@@ -18,20 +18,20 @@
   }
 
   ol {
-    list-style-type: none;
     counter-reset: step-counter;
+    list-style-type: none;
 
     > li {
       position: relative;
 
       &::before {
-        position: absolute;
-        top: 0.2em;
-        left: -1.6em;
+        @include fs-3;
         color: $grey-dk-000;
         content: counter(step-counter);
         counter-increment: step-counter;
-        @include fs-3;
+        left: -1.6em;
+        position: absolute;
+        top: 0.2em;
 
         @include mq(sm) {
           top: 0.11em;
@@ -56,10 +56,10 @@
 
     > li {
       &::before {
-        position: absolute;
-        margin-left: -1.4em;
         color: $grey-dk-000;
-        content: "•";
+        content: '•';
+        margin-left: -1.4em;
+        position: absolute;
       }
     }
   }
@@ -69,11 +69,11 @@
   }
 
   .task-list-item {
-    display: flex;
     align-items: center;
+    display: flex;
 
     &::before {
-      content: "";
+      content: '';
     }
   }
 
@@ -103,12 +103,12 @@
     text-align: right;
 
     &::after {
-      content: ":";
+      content: ':';
     }
   }
 
   dd {
-    margin-left: 1em;
     font-weight: 500;
+    margin-left: 1em;
   }
 }

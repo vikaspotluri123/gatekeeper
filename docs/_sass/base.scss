@@ -8,8 +8,8 @@
 }
 
 ::selection {
-  color: $white;
   background: $link-color;
+  color: $white;
 }
 
 html {
@@ -17,11 +17,11 @@ html {
 }
 
 body {
+  background-color: $body-background-color;
+  color: $body-text-color;
   font-family: $body-font-family;
   font-size: inherit;
   line-height: $body-line-height;
-  color: $body-text-color;
-  background-color: $body-background-color;
 }
 
 p,
@@ -52,11 +52,11 @@ h3,
 h4,
 h5,
 h6 {
-  margin-top: 1.2em;
-  margin-bottom: 0.8em;
+  color: $body-heading-color;
   font-weight: 500;
   line-height: $body-heading-line-height;
-  color: $body-heading-color;
+  margin-bottom: 0.8em;
+  margin-top: 1.2em;
 }
 
 p {
@@ -69,11 +69,11 @@ a {
 }
 
 a:not([class]) {
-  text-decoration: none;
   background-image: linear-gradient($border-color 0%, $border-color 100%);
-  background-repeat: repeat-x;
   background-position: 0 100%;
+  background-repeat: repeat-x;
   background-size: 1px 1px;
+  text-decoration: none;
 
   &:hover {
     background-image: linear-gradient(rgba($link-color, 0.45) 0%, rgba($link-color, 0.45) 100%);
@@ -97,14 +97,14 @@ li {
 }
 
 img {
-  max-width: 100%;
   height: auto;
+  max-width: 100%;
 }
 
 hr {
-  height: 1px;
-  padding: 0;
-  margin: $sp-6 0;
   background-color: $border-color;
   border: 0;
+  height: 1px;
+  margin: $sp-6 0;
+  padding: 0;
 }

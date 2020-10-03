@@ -18,19 +18,19 @@
   }
 
   @else {
-    @warn "No value could be retrieved from `#{$media-query}`. "
-      + "Please make sure it is defined in `$media-queries` map.";
+    @warn 'No value could be retrieved from `#{$media-query}`. '
+      + 'Please make sure it is defined in `$media-queries` map.';
   }
 }
 
 // Responsive container
 
 @mixin container {
-  padding-right: $gutter-spacing-sm;
   padding-left: $gutter-spacing-sm;
+  padding-right: $gutter-spacing-sm;
 
   @include mq(md) {
-    padding-right: $gutter-spacing;
     padding-left: $gutter-spacing;
+    padding-right: $gutter-spacing;
   }
 }

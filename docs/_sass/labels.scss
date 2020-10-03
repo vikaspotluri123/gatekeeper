@@ -4,18 +4,18 @@
 
 .label,
 .label-blue {
+  @include fs-2;
+  background-color: $blue-100;
+  color: $white;
   display: inline-block;
-  padding-top: 0.16em;
-  padding-right: 0.42em;
+  margin-left: $sp-1;
+  margin-right: $sp-1;
   padding-bottom: 0.16em;
   padding-left: 0.42em;
-  margin-right: $sp-1;
-  margin-left: $sp-1;
-  color: $white;
+  padding-right: 0.42em;
+  padding-top: 0.16em;
   text-transform: uppercase;
   vertical-align: middle;
-  background-color: $blue-100;
-  @include fs-2;
 }
 
 .label-green {
@@ -31,6 +31,6 @@
 }
 
 .label-yellow {
-  color: $grey-dk-200;
   background-color: $yellow-200;
+  color: $grey-dk-200;
 }

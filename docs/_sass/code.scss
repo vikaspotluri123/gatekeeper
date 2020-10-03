@@ -4,29 +4,29 @@
 // stylelint-disable selector-no-qualifying-type, declaration-block-semicolon-newline-after,declaration-block-single-line-max-declarations, selector-no-type, selector-max-type
 
 code {
-  padding: 0.2em 0.15em;
-  font-weight: 400;
   background-color: $code-background-color;
   border: $border $border-color;
   border-radius: $border-radius;
+  font-weight: 400;
+  padding: 0.2em 0.15em;
 }
 
 pre.highlight {
-  padding: $sp-3;
+  background-color: $code-background-color;
   margin-bottom: 0;
   -webkit-overflow-scrolling: touch;
-  background-color: $code-background-color;
+  padding: $sp-3;
 
   code {
-    padding: 0;
     border: 0;
+    padding: 0;
   }
 }
 
 .highlighter-rouge {
+  border-radius: $border-radius;
   margin-bottom: $sp-3;
   overflow: hidden;
-  border-radius: $border-radius;
 }
 
 .highlight .c { color: #586e75; } // comment //
@@ -43,13 +43,13 @@ pre.highlight {
 .highlight .c1 { color: #586e75; } // comment.single //
 .highlight .cs { color: #859900; } // comment.special //
 .highlight .gd { color: #2aa198; } // generic.deleted //
-.highlight .ge { font-style: italic; color: #93a1a1; } // generic.emph //
+.highlight .ge { color: #93a1a1; font-style: italic; } // generic.emph //
 .highlight .gr { color: #dc322f; } // generic.error //
 .highlight .gh { color: #cb4b16; } // generic.heading //
 .highlight .gi { color: #859900; } // generic.inserted //
 .highlight .go { color: #93a1a1; } // generic.output //
 .highlight .gp { color: #93a1a1; } // generic.prompt //
-.highlight .gs { font-weight: bold; color: #93a1a1; } // generic.strong //
+.highlight .gs { color: #93a1a1; font-weight: bold; } // generic.strong //
 .highlight .gu { color: #cb4b16; } // generic.subheading //
 .highlight .gt { color: #93a1a1; } // generic.traceback //
 .highlight .kc { color: #cb4b16; } // keyword.constant //
@@ -103,20 +103,20 @@ pre.highlight {
 //
 
 .code-example {
-  padding: $sp-3;
-  margin-bottom: $sp-3;
-  overflow: auto;
   border: 1px solid $border-color;
   border-radius: $border-radius;
+  margin-bottom: $sp-3;
+  overflow: auto;
+  padding: $sp-3;
 
   + .highlighter-rouge,
   + figure.highlight {
-    position: relative;
-    margin-top: -$sp-4;
-    border-right: 1px solid $border-color;
     border-bottom: 1px solid $border-color;
     border-left: 1px solid $border-color;
+    border-right: 1px solid $border-color;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+    margin-top: -$sp-4;
+    position: relative;
   }
 }

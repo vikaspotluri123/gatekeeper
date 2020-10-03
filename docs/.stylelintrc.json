@@ -1,9 +1,12 @@
 {
   "ignoreFiles" : [
     "assets/css/just-the-docs.scss",
-    "_sass/vendor/**/*.scss"
+    "_sass/vendor/**/*.scss",
+    "assets/css/styles.min.scss"
   ],
-  "extends": [
-    "stylelint-config-primer"
-  ]
+  "extends": "stylelint-config-sass-guidelines",
+  "rules": {
+    "max-nesting-depth": null,
+    "scss/dollar-variable-pattern": null
+  }
 }
