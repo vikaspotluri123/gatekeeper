@@ -8,7 +8,7 @@
     "dev": "nodemon index.js -w lib"
   },
   "engines": {
-    "node": ">= 8.15.0"
+    "node": ">= 10.13.0"
   },
   "dependencies": {
     "connect-session-knex": "^2.0.0",
