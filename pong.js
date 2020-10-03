@@ -10,7 +10,6 @@ const LISTENING = 'http://auth-client.vikaspotluri.ml:2950';
 const AUTH_URL = `${API_ROOT}/authenticate?redirect=${LISTENING}/token`;
 const COOKIE = 'private.auth.sid';
 
-const {URL} = require('url');
 const app = require('express')();
 const got = require('got');
 const cookie = require('cookie');
@@ -49,7 +48,7 @@ app.get('/token', async (req, res) => {
 			// Attempt to update the redirect URL based on the `then` query param. If something is malformed,
 			// the redirect will fall back to `/`
 			redirect = new URL(then, LISTENING).pathname;
-		} catch (_) {}
+		} catch {}
 
 		// Update the client cookie with the same name / value that the server uses
 		res.cookie(COOKIE, body.cookie).redirect(redirect);
