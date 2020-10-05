@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node index.js",
     "lint": "xo --ignore docs",
-    "dev": "nodemon index.js -w lib"
+    "dev": "nodemon index.js -w lib",
+    "test": "NODE_ENV=test mocha test/**/*",
+    "test:coverage": "c8 yarn test"
   },
   "engines": {
     "node": ">= 10.13.0"
@@ -25,7 +27,10 @@
     "passport-google-oauth20": "^2.0.0"
   },
   "devDependencies": {
+    "c8": "^7.3.1",
+    "chai": "^4.2.0",
     "got": "^11.7.0",
+    "mocha": "^8.1.3",
     "nodemon": "^2.0.4",
     "xo": "^0.33.1"
   },
@@ -42,6 +47,21 @@
       "unicorn/string-content": "off",
       "func-name-matching": "off",
       "unicorn/prefer-spread": "off"
-    }
+    },
+    "overrides": [
+      {
+        "files": [
+          "test/**/*"
+        ],
+        "env": [
+          "mocha"
+        ],
+        "rules": {
+          "no-unused-expressions": "off",
+          "func-names": "off",
+          "prefer-arrow-callback": "off"
+        }
+      }
+    ]
   }
 }
