@@ -21,7 +21,7 @@ const aclConfig = require('../../../lib/config/process-acl')({
 		allowByDefault: false,
 		paths: [{
 			path: '/billing',
-			allow: ['billing']
+			allow: ['billing', 'managers']
 		}, {
 			path: '/hr/*',
 			allow: ['*@example']
