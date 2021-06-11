@@ -6,10 +6,10 @@
   "license": "MIT",
   "bugs": "https://github.com/pmarsceill/just-the-docs/issues",
   "devDependencies": {
-    "stylelint": "^13.7.2"
+    "stylelint": "^13.13.1"
   },
   "dependencies": {
-    "stylelint-config-sass-guidelines": "^7.1.0"
+    "stylelint-config-sass-guidelines": "^8.0.0"
   },
   "scripts": {
     "test": "stylelint '**/*.scss'"
