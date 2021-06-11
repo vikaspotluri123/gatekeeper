@@ -1,5 +1,5 @@
-const createApp = require('./lib');
-const config = require('./lib/config');
+const createApp = require('./lib/index.js');
+const config = require('./lib/config.js');
 
 async function startServer() {
 	const {app} = await createApp();

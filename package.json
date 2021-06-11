@@ -47,7 +47,8 @@
       "unicorn/no-array-for-each": "off",
       "unicorn/string-content": "off",
       "func-name-matching": "off",
-      "unicorn/prefer-spread": "off"
+      "unicorn/prefer-spread": "off",
+      "unicorn/prefer-module": "off"
     },
     "overrides": [
       {

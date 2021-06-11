@@ -16,7 +16,7 @@ const cookie = require('cookie');
 
 const wrapGot = (url, options = {}) => {
 	options.json = true;
-	return got(url, options).catch(e => e); // eslint-disable-line unicorn/catch-error-name
+	return got(url, options).catch(error => error); // eslint-disable-line promise/prefer-await-to-then
 };
 
 /*
@@ -83,18 +83,29 @@ app.use(async (req, res) => {
 		}
 	});
 
-	// CASE: cookie expired
-	if (body.code === 401) {
-		res.redirect(`${AUTH_URL}/?then=${req.path}`);
-	// Case: user does not have access
-	} else if (body.code === 403) {
-		res.end('Permission denied');
-	// CASE: user does have permission
-	} else if (body.code === 200) {
-		res.end('hello!');
-	// CASE: something happened to the server. Log the message
-	} else {
-		res.end(JSON.stringify(body));
+	switch (body.code) {
+		// Cookie expired
+		case 401: {
+			res.redirect(`${AUTH_URL}/?then=${req.path}`);
+			break;
+		}
+
+		// User does not have access
+		case 403: {
+			res.end('Permission denied');
+			break;
+		}
+
+		// User does have permission
+		case 200: {
+			res.end('hello!');
+			break;
+		}
+
+		// Something happened to the server. Log the message
+		default: {
+			res.end(JSON.stringify(body));
+		}
 	}
 });
 
