@@ -16,7 +16,7 @@
 title: Gatekeeper
 description: Modern, configurable access control via HTTP Basic Authentication
 baseurl: "/gatekeeper" # the subpath of your site, e.g. /blog
-url: "https://github.vikaspotluri.ml" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://github.vikaspotluri.me" # the base hostname & protocol for your site, e.g. http://example.com
 
 permalink: pretty
 exclude: ["node_modules/", "package.json", "package-lock.json",  "script/", "lib/", "bin/", "README.md"]
