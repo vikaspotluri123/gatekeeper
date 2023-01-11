@@ -19,7 +19,7 @@
     "debug": "^4.3.1",
     "express": "^4.17.3",
     "express-session": "^1.17.2",
-    "knex": "^0.95.6",
+    "knex": "^2.4.0",
     "lodash.get": "^4.4.2",
     "matcher": "^4.0.0",
     "morgan": "^1.10.0",
