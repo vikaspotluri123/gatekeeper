@@ -19,7 +19,7 @@ const app = express();
 
 const wrapGot = (url, options = {}) => {
 	options.json = true;
-	return got(url, options).catch(error => error); // eslint-disable-line promise/prefer-await-to-then
+	return got(url, options).catch(error => error);
 };
 
 /*
@@ -82,8 +82,8 @@ app.use(async (req, res) => {
 	const requestURL = `${LISTENING}${req.originalUrl}`;
 	const {body} = await wrapGot(`${API_ROOT}/rest/${requestURL}`, {
 		headers: {
-			cookie: cookie.serialize(COOKIE, cookies[COOKIE])
-		}
+			cookie: cookie.serialize(COOKIE, cookies[COOKIE]),
+		},
 	});
 
 	switch (body.code) {

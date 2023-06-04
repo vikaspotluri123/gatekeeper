@@ -7,31 +7,31 @@ const aclConfig = processAccessControlList({
 	admins: ['admin*@example.app'],
 	rules: [{
 		domain: 'public.example.site',
-		allowByDefault: true
+		allowByDefault: true,
 	}, {
 		domain: 'example.site',
 		all: ['example.site::all'],
 		allowByDefault: false,
 		paths: [{
 			path: '/protected',
-			allow: ['example.site::/protected']
-		}]
+			allow: ['example.site::/protected'],
+		}],
 	}, {
 		domain: '*.example.admin',
 		all: ['admin'],
 		allowByDefault: false,
 		paths: [{
 			path: '/billing',
-			allow: ['billing', 'managers']
+			allow: ['billing', 'managers'],
 		}, {
 			path: '/hr/*',
-			allow: ['*@example']
+			allow: ['*@example'],
 		}, {
 			path: '/explicitly-allowed',
 			allow: 'joe',
-			disableWildcardMatching: true
-		}]
-	}]
+			disableWildcardMatching: true,
+		}],
+	}],
 });
 
 const valid = assertion => expect(assertion).to.be.true;

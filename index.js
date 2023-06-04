@@ -1,3 +1,4 @@
+import process from 'node:process';
 import {fileURLToPath} from 'node:url';
 import {createApp} from './lib/index.js';
 import * as config from './lib/config.js';
@@ -13,11 +14,12 @@ export async function startServer() {
 	return app;
 }
 
-export const app = createApp;
-
 if (
-	import.meta.url.startsWith('file:') &&
-	process.argv[1] === fileURLToPath(import.meta.url)
+	import.meta.url.startsWith('file:')
+	&& process.argv[1] === fileURLToPath(import.meta.url)
 ) {
+	// eslint-disable-next-line unicorn/prefer-top-level-await
 	startServer();
 }
+
+export {createApp as app} from './lib/index.js';

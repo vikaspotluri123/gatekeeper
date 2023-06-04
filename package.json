@@ -45,6 +45,7 @@
   },
   "xo": {
     "rules": {
+      "@typescript-eslint/prefer-nullish-coalescing": "off",
       "func-names": [
         "error",
         "as-needed"
