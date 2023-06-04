@@ -32,8 +32,9 @@ app.get('/token', async (req, res) => {
 	const {token, then} = req.query;
 
 	// Tokens are 128 character hex strings
-	if (!VALID_TOKEN.test(token)) {
-		return res.end('reject');
+	if (typeof token !== 'string' || !VALID_TOKEN.test(token) || typeof then !== 'string') {
+		res.end('reject');
+		return;
 	}
 
 	// Make the request to the auth server with the provided token
@@ -66,6 +67,7 @@ app.get('/token', async (req, res) => {
 
 // Log the user out - clear the cookie and end with a success message
 app.use('/logout', async (_, res) => {
+	// @ts-expect-error
 	res.cookie(COOKIE, '', {maxAge: Date.now() - 10, overwrite: true});
 	res.end('logged out');
 });
