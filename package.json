@@ -12,7 +12,7 @@
     "test:coverage": "c8 yarn test"
   },
   "engines": {
-    "node": ">= 12.13.0"
+    "node": ">= 16.13.0"
   },
   "dependencies": {
     "connect-session-knex": "^3.0.1",
