@@ -4,15 +4,18 @@
  * Listens on port 2950. Both auth-server.vikaspotluri.ml and auth-client.vikaspotluri.ml point to localhost,
  *  so you shouldn't need to configure anything here :)
 */
+
+import express from 'express';
+import got from 'got';
+import cookie from 'cookie';
+
 const VALID_TOKEN = /[a-z\d]{128}/;
 const API_ROOT = 'http://auth-server.vikaspotluri.ml:3000/api/v1';
 const LISTENING = 'http://auth-client.vikaspotluri.ml:2950';
 const AUTH_URL = `${API_ROOT}/authenticate?redirect=${LISTENING}/token`;
 const COOKIE = 'private.auth.sid';
 
-const app = require('express')();
-const got = require('got');
-const cookie = require('cookie');
+const app = express();
 
 const wrapGot = (url, options = {}) => {
 	options.json = true;

@@ -1,7 +1,8 @@
-const createApp = require('./lib/index.js');
-const config = require('./lib/config.js');
+import {fileURLToPath} from 'node:url';
+import {createApp} from './lib/index.js';
+import * as config from './lib/config.js';
 
-async function startServer() {
+export async function startServer() {
 	const {app} = await createApp();
 
 	const port = process.env.PORT || config.get('port', '3000');
@@ -12,9 +13,11 @@ async function startServer() {
 	return app;
 }
 
-module.exports = startServer;
-module.exports.app = createApp;
+export const app = createApp;
 
-if (!module.parent) {
+if (
+	import.meta.url.startsWith('file:') &&
+	process.argv[1] === fileURLToPath(import.meta.url)
+) {
 	startServer();
 }

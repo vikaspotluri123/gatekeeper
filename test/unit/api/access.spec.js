@@ -1,8 +1,9 @@
 // @ts-check
-const {expect} = require('chai');
-const checkAccess = require('../../../lib/api/v1/check-access.js');
+import {expect} from 'chai';
+import {checkAccess} from '../../../lib/api/v1/check-access.js';
+import {processAccessControlList} from '../../../lib/config/process-acl.js';
 
-const aclConfig = require('../../../lib/config/process-acl.js')({
+const aclConfig = processAccessControlList({
 	admins: ['admin*@example.app'],
 	rules: [{
 		domain: 'public.example.site',
