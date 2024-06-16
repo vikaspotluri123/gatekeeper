@@ -7,7 +7,7 @@
 body {
 	margin: 0;
 	font-family: sans-serif;
-	background: rgba(0, 0, 0, 0.9);
+	background: rgba(5, 5, 15, 0.9);
 }
 
 main {
@@ -40,8 +40,9 @@ a {
 	padding: 5em;
 	min-width: 320px;
 	min-height: 320px;
-	background: rgb(245, 245, 245);
+	background: rgb(225, 225, 225);
 	border-radius: 15px;
+	box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
 .btn {
