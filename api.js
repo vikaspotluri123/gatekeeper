@@ -7,3 +7,9 @@ export const config = {
 
 export {makeApp} from './lib/index.js';
 export {useGatekeeper} from './lib/controllers/middleware.js';
+
+// Type exports
+
+/**
+ * @typedef {import('./lib/config/types.js').UserFromRequestFunction} UserFromRequestFunction
+ */
