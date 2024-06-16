@@ -5,10 +5,10 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node server.js",
     "lint": "xo --ignore docs",
     "typecheck": "tsc",
-    "dev": "nodemon index.js -w lib",
+    "dev": "nodemon server.js -w lib",
     "test": "NODE_ENV=test mocha test/**/*",
     "test:coverage": "c8 yarn test"
   },
