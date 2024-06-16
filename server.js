@@ -4,7 +4,7 @@ import {createApp} from './lib/index.js';
 import * as config from './lib/config.js';
 
 export async function startServer() {
-	const {app} = await createApp();
+	const app = await createApp();
 
 	const port = process.env.PORT || config.get('port', '3000');
 
@@ -21,5 +21,3 @@ if (
 	// eslint-disable-next-line unicorn/prefer-top-level-await
 	startServer();
 }
-
-export {createApp as app} from './lib/index.js';
