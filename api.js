@@ -1,3 +1,4 @@
+// @ts-check
 import * as privateConfig from './lib/config.js';
 
 export const config = {
@@ -5,7 +6,7 @@ export const config = {
 	refreshing: privateConfig.refreshing,
 };
 
-export {makeApp} from './lib/index.js';
+export {createApp} from './lib/index.js';
 export {useGatekeeper} from './lib/controllers/middleware.js';
 
 // Type exports
