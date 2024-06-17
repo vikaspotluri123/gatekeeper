@@ -1,3 +1,8 @@
 import {type Request} from 'express';
 
-export type UserFromRequestFunction = (request: Request) => {user: string | string[]; authenticated: boolean};
+type MaybeUser = {
+	user: string | string[];
+	authenticated: boolean;
+} | undefined | null; // eslint-disable-line @typescript-eslint/ban-types
+
+export type UserFromRequestFunction = (request: Request) => MaybeUser | Promise<MaybeUser>;
