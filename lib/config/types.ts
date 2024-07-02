@@ -1,7 +1,7 @@
 import {type Request} from 'express';
 
 type MaybeUser = {
-	user: string | string[];
+	user: string;
 	authenticated: boolean;
 } | undefined | null; // eslint-disable-line @typescript-eslint/ban-types
 
