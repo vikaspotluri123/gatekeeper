@@ -39,6 +39,9 @@ server {
 		# Example of required auth that proxies
 		error_page 401 @login;
 		auth_request @auth;
+		auth_request_set $auth_cookie $upstream_http_set_cookie;
+		add_header "Set-Cookie" $auth_cookie;
+
 		proxy_pass http://127.0.0.1:2591;
 		include proxy_params;
 	}
@@ -47,6 +50,8 @@ server {
 		# Example of required auth with "static" files
 		error_page 401 @login;
 		auth_request @auth;
+		auth_request_set $auth_cookie $upstream_http_set_cookie;
+		add_header "Set-Cookie" $auth_cookie;
 	}
 
 	location ~ \.php$ {
