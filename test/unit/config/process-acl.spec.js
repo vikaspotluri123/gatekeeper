@@ -9,6 +9,7 @@ describe('Unit > Process acl', function () {
 			admins: [],
 			domains: [],
 			emails: [],
+			potentialPublicRules: [],
 		});
 	});
 
@@ -46,6 +47,9 @@ describe('Unit > Process acl', function () {
 					allowByDefault: true,
 				}],
 				all: ['john@example.com', 'joe@example.com'],
+			}, {
+				domain: 'cdn.example.com',
+				allowByDefault: true,
 			}],
 		})).to.deep.equal({
 			rules: [{
@@ -78,12 +82,32 @@ describe('Unit > Process acl', function () {
 					allow: ['john@example.com', 'joe@example.com'],
 				}, {
 					path: '/public/*',
-					allowByDefault: true,
+					allowByDefault: true, // Should be the only path in `potentialPublicRules`
 					allow: [],
 				}],
+			}, {
+				domain: 'cdn.example.com',
+				all: [],
+				paths: [],
+				allowByDefault: true,
+			}],
+			potentialPublicRules: [{
+				domain: 'domain3.example.com',
+				allowByDefault: false,
+				all: [],
+				paths: [{
+					path: '/public/*',
+					allow: [],
+					allowByDefault: true,
+				}],
+			}, {
+				domain: 'cdn.example.com',
+				allowByDefault: true,
+				all: [],
+				paths: [],
 			}],
 			admins: ['john@example.com'],
-			domains: ['domain1.example.com', 'domain2.example.com', 'domain3.example.com'],
+			domains: ['domain1.example.com', 'domain2.example.com', 'domain3.example.com', 'cdn.example.com'],
 			emails: ['john@example.com', 'joe@example.com'],
 		});
 	});
