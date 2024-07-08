@@ -40,6 +40,7 @@ server {
 		error_page 401 @login;
 		auth_request @auth;
 		auth_request_set $auth_cookie $upstream_http_set_cookie;
+		auth_request_set $auth_location $upstream_http_location;
 		add_header "Set-Cookie" $auth_cookie;
 
 		proxy_pass http://127.0.0.1:2591;
@@ -51,6 +52,7 @@ server {
 		error_page 401 @login;
 		auth_request @auth;
 		auth_request_set $auth_cookie $upstream_http_set_cookie;
+		auth_request_set $auth_location $upstream_http_location;
 		add_header "Set-Cookie" $auth_cookie;
 	}
 
@@ -70,6 +72,14 @@ server {
 	}
 
 	location @login {
+		internal;
+
+		# TODO: This should work but the block is never evaluated when `tokenSwapAddLocationHeader` is enabled
+		# https://nginx-devel.nginx.narkive.com/0cH1MZv7/patch-allow-http-auth-request-module-to-forward-302-responses
+		#if ($auth_location) {
+		#	return 302 $auth_location;
+		#}
+
 		return 302 https://auth.example.com/api/v1/authenticate?redirect=https://example.com/login;
 	}
 }
