@@ -9,7 +9,13 @@ describe('Unit > Process acl', function () {
 			admins: [],
 			domains: [],
 			emails: [],
-			potentialPublicRules: [],
+			public: {
+				rules: [],
+				admins: [],
+				domains: [],
+				allowAdmins: false,
+			},
+			potentialPublicUrlRegex: undefined,
 		});
 	});
 
@@ -45,6 +51,11 @@ describe('Unit > Process acl', function () {
 				}, {
 					path: '/public',
 					allowByDefault: true,
+				// @ts-expect-error `allow` not provided
+				}, {
+					path: '/favicon.ico',
+					allowByDefault: true,
+					disableWildcardMatching: true,
 				}],
 				all: ['john@example.com', 'joe@example.com'],
 			}, {
@@ -82,7 +93,12 @@ describe('Unit > Process acl', function () {
 					allow: ['john@example.com', 'joe@example.com'],
 				}, {
 					path: '/public/*',
-					allowByDefault: true, // Should be the only path in `potentialPublicRules`
+					allowByDefault: true, // Should be in `potentialPublicRules`
+					allow: [],
+				}, {
+					path: '/favicon.ico',
+					allowByDefault: true, // Should be in `potentialPublicRules`
+					disableWildcardMatching: true,
 					allow: [],
 				}],
 			}, {
@@ -91,21 +107,32 @@ describe('Unit > Process acl', function () {
 				paths: [],
 				allowByDefault: true,
 			}],
-			potentialPublicRules: [{
-				domain: 'domain3.example.com',
-				allowByDefault: false,
-				all: [],
-				paths: [{
-					path: '/public/*',
-					allow: [],
+			public: {
+				admins: [],
+				allowAdmins: false,
+				domains: ['domain3.example.com', 'cdn.example.com'],
+				rules: [{
+					domain: 'domain3.example.com',
+					allowByDefault: false,
+					all: [],
+					paths: [{
+						path: '/public/*',
+						allow: [],
+						allowByDefault: true,
+					}, {
+						path: '/favicon.ico',
+						disableWildcardMatching: true,
+						allow: [],
+						allowByDefault: true,
+					}],
+				}, {
+					domain: 'cdn.example.com',
 					allowByDefault: true,
+					all: [],
+					paths: [],
 				}],
-			}, {
-				domain: 'cdn.example.com',
-				allowByDefault: true,
-				all: [],
-				paths: [],
-			}],
+			},
+			potentialPublicUrlRegex: /domain3\.example\.com\/public|domain3\.example\.com\/favicon\.ico|cdn\.example\.com/,
 			admins: ['john@example.com'],
 			domains: ['domain1.example.com', 'domain2.example.com', 'domain3.example.com', 'cdn.example.com'],
 			emails: ['john@example.com', 'joe@example.com'],
