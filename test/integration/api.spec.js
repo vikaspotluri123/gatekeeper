@@ -7,6 +7,7 @@ import {processAccessControlList} from '../../lib/config/process-acl.js';
 import {aclRules} from '../fixtures/acl-rules.js';
 
 Object.assign(config.raw(), {
+	enableExperimentalPublicPaths: true,
 	db: {
 		client: 'sqlite3',
 		useNullAsDefault: false,
@@ -64,7 +65,6 @@ after(async function () {
 });
 
 describe('Integration > Router > API', function () {
-	/** @type {Array<{name: string; url: string; shouldHaveAccess: boolean; user?: string; status?: number;}>} */
 	const scenarios = [{
 		name: 'no auth, public domain',
 		url: 'https://cdn.example.com/public',
