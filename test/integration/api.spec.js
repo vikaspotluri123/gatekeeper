@@ -18,113 +18,142 @@ Object.assign(config.raw(), {
 	acl: processAccessControlList(aclRules),
 });
 
-/** @type {ReturnType<typeof supertest>} */
-let agent;
-/** @type {Record<'admin' | 'trusted' | 'generic', string>} */
-let cookies;
-
-before(async function () {
-	// Defer loading setup functions so the database config can be properly set
-	const [{createApp}, {knex}] = await Promise.all([
-		import('../../lib/index.js'),
-		import('../../lib/database/knex.js'),
-	]);
-
-	const app = await createApp();
-	agent = supertest(app);
-
-	const {cookie: name, secret} = config.raw();
-	// Arbitrary number with enough buffer to allow for walking through tests
-	const expired = new Date(Date.now() + 100_000_000).toISOString();
-
-	cookies = {
-		admin: `${name}=s:${sign('admin', secret)}`,
-		trusted: `${name}=s:${sign('trusted', secret)}`,
-		generic: `${name}=s:${sign('generic', secret)}`,
-	};
-
-	await knex('sessions')
-		.insert([{
-			sid: 'admin',
-			sess: JSON.stringify({cookie: {}, passport: {user: 'john@example.com'}}),
-			expired,
-		}, {
-			sid: 'trusted',
-			sess: JSON.stringify({cookie: {}, passport: {user: 'joe@example.com'}}),
-			expired,
-		}, {
-			sid: 'generic',
-			sess: JSON.stringify({cookie: {}, passport: {user: 'employee@example.com'}}),
-			expired,
-		}]);
-});
-
-after(async function () {
-	const {knex} = await import('../../lib/database/knex.js');
-	knex.destroy();
-});
+const scenarios = [{
+	name: 'no auth, public domain',
+	url: 'https://cdn.example.com/public',
+	shouldHaveAccess: true,
+}, {
+	name: 'no auth, public path',
+	url: 'https://domain3.example.com/public',
+	shouldHaveAccess: true,
+}, {
+	name: 'no auth, unknown path',
+	url: 'https://domain3.example.com/no-rule',
+	shouldHaveAccess: false,
+}, {
+	name: 'no auth, no paths',
+	url: 'https://domain1.example.com/asset',
+	shouldHaveAccess: false,
+}, {
+	name: 'no auth, empty paths',
+	url: 'https://domain2.example.com/asset',
+	shouldHaveAccess: false,
+}, {
+	name: 'not admin, unknown path (all)',
+	url: 'https://domain2.example.com/asset',
+	shouldHaveAccess: true,
+	user: 'trusted',
+}, {
+	name: 'not admin, unknown path (-all)',
+	url: 'https://domain2.example.com/asset',
+	shouldHaveAccess: false,
+	user: 'generic',
+}, {
+	name: 'admin, unknown path',
+	url: 'https://domain3.example.com/asset',
+	shouldHaveAccess: true,
+	user: 'admin',
+}, {
+	name: 'wrong user, known path',
+	url: 'https://domain3.example.com/path1',
+	shouldHaveAccess: false,
+	user: 'generic',
+}, {
+	name: 'known user, known path',
+	url: 'https://domain3.example.com/path1',
+	shouldHaveAccess: true,
+	user: 'trusted',
+}, {
+	name: 'unknown domain (cors)',
+	url: 'https://typo.example.com/',
+	shouldHaveAccess: true,
+	user: 'admin',
+	status: 400,
+}, {
+	name: 'wildcard private, explicit private',
+	url: 'https://domain3.example.com/path2/public',
+	shouldHaveAccess: true,
+}, {
+	name: 'wildcard public, explicit private',
+	url: 'https://domain3.example.com/public/private',
+	shouldHaveAccess: false,
+}, {
+	name: 'no auth, shadowed path (private before public)',
+	url: 'https://domain3.example.com/path2/public_ignored',
+	shouldHaveAccess: false,
+}, {
+	name: 'no wildcard, shadowed path (private before public)',
+	url: 'https://domain3.example.com/path3/public_ignored',
+	shouldHaveAccess: false,
+	user: 'generic',
+}, {
+	name: 'intermediate wildcard, with wildcard',
+	url: 'https://domain3.example.com/path4/sub_path/hello',
+	shouldHaveAccess: true,
+	user: 'trusted',
+}, {
+	name: 'untrusted intermediate wildcard, with wildcard',
+	url: 'https://domain3.example.com/path4/sub_path/hello',
+	shouldHaveAccess: false,
+	user: 'generic',
+}, {
+	name: 'intermediate wildcard, wildcard disabled',
+	url: 'https://domain3.example.com/path5/sub_path/hello/sub',
+	shouldHaveAccess: true,
+	user: 'trusted',
+}, {
+	name: 'untrusted intermediate wildcard, wildcard disabled',
+	url: 'https://domain3.example.com/path5/sub_path/hello/sub',
+	shouldHaveAccess: false,
+	user: 'generic',
+}];
 
 describe('Integration > Router > API', function () {
-	const scenarios = [{
-		name: 'no auth, public domain',
-		url: 'https://cdn.example.com/public',
-		shouldHaveAccess: true,
-	}, {
-		name: 'no auth, public path',
-		url: 'https://domain3.example.com/public',
-		shouldHaveAccess: true,
-	}, {
-		name: 'no auth, unknown path',
-		url: 'https://domain3.example.com/no-rule',
-		shouldHaveAccess: false,
-	}, {
-		name: 'no auth, no paths',
-		url: 'https://domain1.example.com/asset',
-		shouldHaveAccess: false,
-	}, {
-		name: 'no auth, empty paths',
-		url: 'https://domain2.example.com/asset',
-		shouldHaveAccess: false,
-	}, {
-		name: 'not admin, unknown path (all)',
-		url: 'https://domain2.example.com/asset',
-		shouldHaveAccess: true,
-		user: 'trusted',
-	}, {
-		name: 'not admin, unknown path (-all)',
-		url: 'https://domain2.example.com/asset',
-		shouldHaveAccess: false,
-		user: 'generic',
-	}, {
-		name: 'admin, unknown path',
-		url: 'https://domain3.example.com/asset',
-		shouldHaveAccess: true,
-		user: 'admin',
-	}, {
-		name: 'wrong user, known path',
-		url: 'https://domain3.example.com/path1',
-		shouldHaveAccess: false,
-		user: 'generic',
-	}, {
-		name: 'known user, known path',
-		url: 'https://domain3.example.com/path1',
-		shouldHaveAccess: true,
-		user: 'trusted',
-	}, {
-		name: 'unknown domain (cors)',
-		url: 'https://typo.example.com/',
-		shouldHaveAccess: true,
-		user: 'admin',
-		status: 400,
-	}, {
-		name: 'wildcard private, explicit private',
-		url: 'https://domain3.example.com/path2/public',
-		shouldHaveAccess: true,
-	}, {
-		name: 'wildcard public, explicit private',
-		url: 'https://domain3.example.com/public/private',
-		shouldHaveAccess: false,
-	}];
+/** @type {ReturnType<typeof supertest>} */
+	let agent;
+	/** @type {Record<'admin' | 'trusted' | 'generic', string>} */
+	let cookies;
+
+	before(async function () {
+		// Defer loading setup functions so the database config can be properly set
+		const [{createApp}, {knex}] = await Promise.all([
+			import('../../lib/index.js'),
+			import('../../lib/database/knex.js'),
+		]);
+
+		const app = await createApp();
+		agent = supertest(app);
+
+		const {cookie: name, secret} = config.raw();
+		// Arbitrary number with enough buffer to allow for stepping through tests
+		const expired = new Date(Date.now() + 100_000_000).toISOString();
+
+		cookies = {
+			admin: `${name}=s:${sign('admin', secret)}`,
+			trusted: `${name}=s:${sign('trusted', secret)}`,
+			generic: `${name}=s:${sign('generic', secret)}`,
+		};
+
+		await knex('sessions')
+			.insert([{
+				sid: 'admin',
+				sess: JSON.stringify({cookie: {}, passport: {user: 'john@example.com'}}),
+				expired,
+			}, {
+				sid: 'trusted',
+				sess: JSON.stringify({cookie: {}, passport: {user: 'joe@example.com'}}),
+				expired,
+			}, {
+				sid: 'generic',
+				sess: JSON.stringify({cookie: {}, passport: {user: 'employee@example.com'}}),
+				expired,
+			}]);
+	});
+
+	after(async function () {
+		const {knex} = await import('../../lib/database/knex.js');
+		knex.destroy();
+	});
 
 	for (const {name, url, user, shouldHaveAccess, status} of scenarios) {
 		it(`/api/v1/http: ${name}`, async function () {

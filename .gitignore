@@ -10,5 +10,6 @@ coverage
 node_modules
 
 config.*.json
+!config.test.json
 auth.db
 .gkrnd

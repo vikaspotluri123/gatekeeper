@@ -22,7 +22,7 @@ export const aclRules = {
 			path: '/path2/*', // Second wildcard should not be added
 			allow: ['john@example.com', 'joe@example.com'],
 		}, {
-			path: '/path2/public_ignore', // Path wildcard will take preference
+			path: '/path2/public_ignored', // Path wildcard will take preference
 			allow: [],
 			allowByDefault: true,
 		}, {
