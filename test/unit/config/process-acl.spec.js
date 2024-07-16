@@ -31,8 +31,16 @@ describe('Unit > Process acl', function () {
 					path: '/path1/*',
 					allow: ['joe@example.com'],
 				}, {
+					path: '/path2/public/*',
+					allow: [],
+					allowByDefault: true,
+				}, {
 					path: '/path2/*',
 					allow: ['john@example.com', 'joe@example.com'],
+				}, {
+					path: '/path2/public_ignored/*',
+					allow: [],
+					allowByDefault: true,
 				}, {
 					path: '/path3/',
 					disableWildcardMatching: true,
@@ -43,6 +51,9 @@ describe('Unit > Process acl', function () {
 					allow: ['john@example.com', 'joe@example.com'],
 				}, {
 					path: '/path5/*/hello/*',
+					allow: ['john@example.com', 'joe@example.com'],
+				}, {
+					path: '/public/private/*',
 					allow: ['john@example.com', 'joe@example.com'],
 				}, {
 					path: '/public/*',
