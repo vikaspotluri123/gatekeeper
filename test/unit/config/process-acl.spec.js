@@ -10,18 +10,12 @@ describe('Unit > Process acl', function () {
 			admins: [],
 			domains: [],
 			emails: [],
-			public: {
-				rules: [],
-				admins: [],
-				domains: [],
-				allowAdmins: false,
-			},
-			potentialPublicUrlRegex: undefined,
 		});
 	});
 
 	it('general use cases', function () {
 		expect(processAccessControlList(aclRules)).to.deep.equal({
+			admins: ['john@example.com'],
 			rules: [{
 				domain: 'domain1.example.com',
 				all: [],
@@ -66,33 +60,6 @@ describe('Unit > Process acl', function () {
 				paths: [],
 				allowByDefault: true,
 			}],
-			public: {
-				admins: [],
-				allowAdmins: false,
-				domains: ['domain3.example.com', 'cdn.example.com'],
-				rules: [{
-					domain: 'domain3.example.com',
-					allowByDefault: false,
-					all: [],
-					paths: [{
-						path: '/public/*',
-						allow: [],
-						allowByDefault: true,
-					}, {
-						path: '/favicon.ico',
-						disableWildcardMatching: true,
-						allow: [],
-						allowByDefault: true,
-					}],
-				}, {
-					domain: 'cdn.example.com',
-					allowByDefault: true,
-					all: [],
-					paths: [],
-				}],
-			},
-			potentialPublicUrlRegex: /domain3\.example\.com\/public|domain3\.example\.com\/favicon\.ico|cdn\.example\.com/,
-			admins: ['john@example.com'],
 			domains: ['domain1.example.com', 'domain2.example.com', 'domain3.example.com', 'cdn.example.com'],
 			emails: ['john@example.com', 'joe@example.com'],
 		});

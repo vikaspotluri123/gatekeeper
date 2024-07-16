@@ -116,6 +116,14 @@ describe('Integration > Router > API', function () {
 		shouldHaveAccess: true,
 		user: 'admin',
 		status: 400,
+	}, {
+		name: 'wildcard private, explicit private',
+		url: 'https://domain3.example.com/path2/public',
+		shouldHaveAccess: true,
+	}, {
+		name: 'wildcard public, explicit private',
+		url: 'https://domain3.example.com/public/private',
+		shouldHaveAccess: false,
 	}];
 
 	for (const {name, url, user, shouldHaveAccess, status} of scenarios) {

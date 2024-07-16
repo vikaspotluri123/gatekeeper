@@ -15,8 +15,16 @@ export const aclRules = {
 			path: '/path1', // Wildcard should be added
 			allow: 'joe@example.com', // Should be coerced to an Array
 		}, {
+			path: '/path2/public',
+			allowByDefault: true,
+			allow: [],
+		}, {
 			path: '/path2/*', // Second wildcard should not be added
 			allow: ['john@example.com', 'joe@example.com'],
+		}, {
+			path: '/path2/public_ignore', // Path wildcard will take preference
+			allow: [],
+			allowByDefault: true,
 		}, {
 			path: '/path3/', // Wildcard should not be added
 			disableWildcardMatching: true,
@@ -27,6 +35,9 @@ export const aclRules = {
 			allow: ['john@example.com', 'joe@example.com'],
 		}, {
 			path: '/path5/*/hello', // Should end up with 2 wildcards
+			allow: ['john@example.com', 'joe@example.com'],
+		}, {
+			path: '/public/private',
 			allow: ['john@example.com', 'joe@example.com'],
 			// @ts-expect-error `allow` not provided
 		}, {
