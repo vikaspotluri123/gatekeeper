@@ -157,6 +157,8 @@ describe('Integration > Router > API', function () {
 	/** @type {Record<'admin' | 'trusted' | 'generic', string>} */
 	let cookies;
 	let createCookie;
+	/** @type {import('../../lib/config/types.js').UserFromRequestFunction} */
+	let getUser = () => null;
 
 	before(async function () {
 		// Defer loading setup functions so the database config can be properly set
@@ -165,7 +167,7 @@ describe('Integration > Router > API', function () {
 			import('../../lib/database/knex.js'),
 		]);
 
-		const app = await createApp();
+		const app = await createApp(request => getUser(request));
 		agent = supertest(app);
 
 		const {cookie: name, secret} = config.raw();
@@ -207,7 +209,6 @@ describe('Integration > Router > API', function () {
 
 	after(async function () {
 		const {knex} = await import('../../lib/database/knex.js');
-		await knex('tokens').del();
 		knex.destroy();
 	});
 
@@ -238,5 +239,23 @@ describe('Integration > Router > API', function () {
 			cookie,
 			xOriginalUrl: 'https://domain3.example.com/path1',
 		});
+	});
+
+	it('/api/v1/http: altGetUser', async function () {
+		const originalGetUser = getUser;
+		getUser = () => ({
+			authenticated: true,
+			user: 'joe@example.com',
+		});
+
+		try {
+			await makeRequest(agent, {
+				url: '/api/v1/http',
+				status: 200,
+				xOriginalUrl: 'https://domain3.example.com/path1',
+			});
+		} finally {
+			getUser = originalGetUser;
+		}
 	});
 });
