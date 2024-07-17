@@ -8,6 +8,7 @@ import {aclRules} from '../fixtures/acl-rules.js';
 
 Object.assign(config.raw(), {
 	enableExperimentalPublicPaths: true,
+	experimentalAutomaticTokenSwap: true,
 	db: {
 		client: 'sqlite3',
 		useNullAsDefault: false,
@@ -159,13 +160,18 @@ describe('Integration > Router > API', function () {
 	let createCookie;
 	/** @type {import('../../lib/config/types.js').UserFromRequestFunction} */
 	let getUser = () => null;
+	/** @type {RegExp} */
+	let VALID_TOKEN;
 
 	before(async function () {
 		// Defer loading setup functions so the database config can be properly set
-		const [{createApp}, {knex}] = await Promise.all([
+		const [{createApp}, {knex}, {VALID_TOKEN: validToken}] = await Promise.all([
 			import('../../lib/index.js'),
 			import('../../lib/database/knex.js'),
+			import('../../lib/controllers/api/v1/token.js'),
 		]);
+
+		VALID_TOKEN = validToken;
 
 		const app = await createApp(request => getUser(request));
 		agent = supertest(app);
@@ -209,6 +215,7 @@ describe('Integration > Router > API', function () {
 
 	after(async function () {
 		const {knex} = await import('../../lib/database/knex.js');
+		await knex('tokens').del();
 		knex.destroy();
 	});
 
@@ -257,5 +264,25 @@ describe('Integration > Router > API', function () {
 		} finally {
 			getUser = originalGetUser;
 		}
+	});
+
+	it('Token Swap', async function () {
+		const url = 'domain3.example.com/path1';
+		await agent.get(`/api/v1/authenticate/?redirect=${url}`)
+			.expect(302)
+			.expect('location', '/login');
+
+		const redirect = await agent.get(`/api/v1/authenticate/?redirect=${url}`)
+			.set('cookie', cookies.admin)
+			.expect(302)
+			.expect('location', new RegExp(`https://${url}\\?token=${VALID_TOKEN.source.slice(1, -1)}`))
+			.then(response => response.get('location'));
+
+		await makeRequest(agent, {
+			url: '/api/v1/http',
+			status: 200,
+			xOriginalUrl: redirect,
+			cookie: '', // No cookie should be provided since the token is the source
+		});
 	});
 });
