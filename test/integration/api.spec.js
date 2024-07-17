@@ -109,35 +109,46 @@ const scenarios = [{
 }];
 
 /**
- * @param {string | string[] | undefined} cookie
- * @param {string | undefined} [domain]
+ * @param {ReturnType<typeof supertest>} agent
+ * @param {{
+	url: string;
+	status: number;
+	cookie?: string;
+	xOriginalUrl?: string;
+	cookieDomain?: string | undefined;
+	body?: Record<any, unknown>
+ }} config
  */
-function expectCookieDomain(cookie, domain) {
-	if (!cookie) {
-		expect(cookie).to.equal(domain);
-		return;
-	}
+async function makeRequest(agent, {url, status, cookie = '', xOriginalUrl = '', cookieDomain = undefined, body = {}}) {
+	return agent.get(url)
+		.set('x-original-uri', xOriginalUrl)
+		.set('origin', xOriginalUrl ? new URL(xOriginalUrl).origin : '')
+		.set('cookie', cookie)
+		.then(response => {
+			const setCookie = response.get('set-cookie');
+			expect(response.status).to.equal(status);
+			expect(response.body).to.contain({code: status, ...body});
 
-	const cookieName = config.raw().cookieDomain;
-	if (!Array.isArray(cookie)) {
-		cookie = [cookie];
-	}
+			// If there are no cookies and no cookie domain is requested we don't need to make any assertions
+			if (!setCookie && (cookieDomain == setCookie || setCookie?.length === 0)) { // eslint-disable-line eqeqeq
+				return;
+			}
 
-	for (const singleCookie of cookie) {
-		if (!singleCookie.includes(cookieName)) {
-			continue;
-		}
+			const cookieName = config.raw().cookie;
+			for (const singleCookie of Array.isArray(setCookie) ? setCookie : [setCookie || '']) {
+				if (singleCookie.includes(cookieName)) {
+					if (cookieDomain) {
+						expect(singleCookie).to.include(`Domain=${cookieDomain}`);
+					} else {
+						expect(singleCookie).to.not.include('Domain=');
+					}
 
-		if (domain) {
-			expect(singleCookie).to.include(`Domain=${domain}`);
-		} else {
-			expect(singleCookie.toLowerCase()).to.not.include('domain=');
-		}
+					return;
+				}
+			}
 
-		return;
-	}
-
-	expect(domain).to.equal(undefined);
+			expect(false, 'Missing cookie').to.be.true;
+		});
 }
 
 describe('Integration > Router > API', function () {
@@ -201,41 +212,31 @@ describe('Integration > Router > API', function () {
 
 	for (const {name, url, user, shouldHaveAccess, status} of scenarios) {
 		it(`/api/v1/http: ${name}`, async function () {
-			return agent.get('/api/v1/http')
-				.set('x-original-uri', url)
-				.set('origin', new URL(url).origin)
-				.set('cookie', user ? cookies[user] : '')
-				.then(response => {
-					const responseCode = status ?? (shouldHaveAccess ? 200 : (user ? 403 : 401));
-					expectCookieDomain(response.get('set-cookie'));
-
-					expect(response.status).to.equal(responseCode);
-					expect(response.body).to.contain({code: responseCode});
-				});
+			return makeRequest(agent, {
+				url: '/api/v1/http',
+				cookie: user ? cookies[user] : '',
+				status: status ?? (shouldHaveAccess ? 200 : (user ? 403 : 401)),
+				xOriginalUrl: url,
+			});
 		});
 	}
 
 	it('/api/v1/rest: unknown domain (!allowAdmins)', function () {
-		return agent.get('/api/v1/rest/https://typo.example.com/')
-			.set('origin', 'https://typo.example.com')
-			.set('cookie', cookies.admin)
-			.then(response => {
-				expect(response.status).to.equal(403);
-				expect(response.body).to.contain({code: 403});
-				expectCookieDomain(response.get('set-cookie'));
-			});
+		return makeRequest(agent, {
+			url: '/api/v1/rest/https://typo.example.com/',
+			status: 403,
+			cookie: cookies.admin,
+		});
 	});
 
 	it('/api/v1/http: cookie domain mismatch', async function () {
 		const cookie = await createCookie('admin_authonly', 'john@example.com', 'auth.example.com');
-		return agent.get('/api/v1/http')
-			.set('x-original-uri', 'https://domain3.example.com/path1')
-			.set('origin', 'https://domain3.example.com')
-			.set('cookie', cookie)
-			.then(response => {
-				expect(response.status).to.equal(400);
-				expect(response.body).to.contain({code: 400});
-				expectCookieDomain(response.get('set-cookie'));
-			});
+		return makeRequest(agent, {
+			url: '/api/v1/http',
+			status: 400,
+			cookie,
+			xOriginalUrl: 'https://domain3.example.com/path1',
+			cookieDomain: 'auth.example.com',
+		});
 	});
 });
