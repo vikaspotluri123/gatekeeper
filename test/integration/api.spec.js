@@ -108,11 +108,44 @@ const scenarios = [{
 	user: 'generic',
 }];
 
+/**
+ * @param {string | string[] | undefined} cookie
+ * @param {string | undefined} [domain]
+ */
+function expectCookieDomain(cookie, domain) {
+	if (!cookie) {
+		expect(cookie).to.equal(domain);
+		return;
+	}
+
+	const cookieName = config.raw().cookieDomain;
+	if (!Array.isArray(cookie)) {
+		cookie = [cookie];
+	}
+
+	for (const singleCookie of cookie) {
+		if (!singleCookie.includes(cookieName)) {
+			continue;
+		}
+
+		if (domain) {
+			expect(singleCookie).to.include(`Domain=${domain}`);
+		} else {
+			expect(singleCookie.toLowerCase()).to.not.include('domain=');
+		}
+
+		return;
+	}
+
+	expect(domain).to.equal(undefined);
+}
+
 describe('Integration > Router > API', function () {
 /** @type {ReturnType<typeof supertest>} */
 	let agent;
 	/** @type {Record<'admin' | 'trusted' | 'generic', string>} */
 	let cookies;
+	let createCookie;
 
 	before(async function () {
 		// Defer loading setup functions so the database config can be properly set
@@ -127,27 +160,38 @@ describe('Integration > Router > API', function () {
 		const {cookie: name, secret} = config.raw();
 		// Arbitrary number with enough buffer to allow for stepping through tests
 		const expired = new Date(Date.now() + 100_000_000).toISOString();
+		/**
+		 * @param {string} user
+		 * @param {string} email
+		 * @param {string} [domain]
+		 */
+		createCookie = async (user, email, domain) => {
+			const cookie = `${name}=s:${sign(user, secret)}`;
+			const sess = JSON.stringify({
+				cookie: domain ? {domain} : {},
+				passport: {user: email},
+			});
 
-		cookies = {
-			admin: `${name}=s:${sign('admin', secret)}`,
-			trusted: `${name}=s:${sign('trusted', secret)}`,
-			generic: `${name}=s:${sign('generic', secret)}`,
+			await knex('sessions').insert({
+				sid: user,
+				sess,
+				expired,
+			});
+
+			return cookie;
 		};
 
-		await knex('sessions')
-			.insert([{
-				sid: 'admin',
-				sess: JSON.stringify({cookie: {}, passport: {user: 'john@example.com'}}),
-				expired,
-			}, {
-				sid: 'trusted',
-				sess: JSON.stringify({cookie: {}, passport: {user: 'joe@example.com'}}),
-				expired,
-			}, {
-				sid: 'generic',
-				sess: JSON.stringify({cookie: {}, passport: {user: 'employee@example.com'}}),
-				expired,
-			}]);
+		const [admin, trusted, generic] = await Promise.all([
+			createCookie('admin', 'john@example.com'),
+			createCookie('trusted', 'joe@example.com'),
+			createCookie('generic', 'employee@example.com'),
+		]);
+
+		cookies = {
+			admin,
+			trusted,
+			generic,
+		};
 	});
 
 	after(async function () {
@@ -163,6 +207,8 @@ describe('Integration > Router > API', function () {
 				.set('cookie', user ? cookies[user] : '')
 				.then(response => {
 					const responseCode = status ?? (shouldHaveAccess ? 200 : (user ? 403 : 401));
+					expectCookieDomain(response.get('set-cookie'));
+
 					expect(response.status).to.equal(responseCode);
 					expect(response.body).to.contain({code: responseCode});
 				});
@@ -176,6 +222,20 @@ describe('Integration > Router > API', function () {
 			.then(response => {
 				expect(response.status).to.equal(403);
 				expect(response.body).to.contain({code: 403});
+				expectCookieDomain(response.get('set-cookie'));
+			});
+	});
+
+	it('/api/v1/http: cookie domain mismatch', async function () {
+		const cookie = await createCookie('admin_authonly', 'john@example.com', 'auth.example.com');
+		return agent.get('/api/v1/http')
+			.set('x-original-uri', 'https://domain3.example.com/path1')
+			.set('origin', 'https://domain3.example.com')
+			.set('cookie', cookie)
+			.then(response => {
+				expect(response.status).to.equal(400);
+				expect(response.body).to.contain({code: 400});
+				expectCookieDomain(response.get('set-cookie'));
 			});
 	});
 });
