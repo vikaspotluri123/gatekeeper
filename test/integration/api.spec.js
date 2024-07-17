@@ -7,7 +7,6 @@ import {processAccessControlList} from '../../lib/config/process-acl.js';
 import {aclRules} from '../fixtures/acl-rules.js';
 
 Object.assign(config.raw(), {
-	enableExperimentalPublicPaths: true,
 	experimentalAutomaticTokenSwap: true,
 	db: {
 		client: 'sqlite3',
