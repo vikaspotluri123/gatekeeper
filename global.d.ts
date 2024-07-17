@@ -4,7 +4,11 @@ declare namespace Express {
 		isAPIRequest?: boolean;
 		tokenRedirect?: string;
 		user?: string;
-		session: {
+		// When using `altGetUserFromRequest`, the cookie session might not be loaded
+		session?: {
+			cookie?: {
+				domain: string;
+			};
 			next?: string;
 			token?: {
 				isInterstitial?: boolean;
