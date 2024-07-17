@@ -207,6 +207,7 @@ describe('Integration > Router > API', function () {
 
 	after(async function () {
 		const {knex} = await import('../../lib/database/knex.js');
+		await knex('tokens').del();
 		knex.destroy();
 	});
 
@@ -236,7 +237,6 @@ describe('Integration > Router > API', function () {
 			status: 400,
 			cookie,
 			xOriginalUrl: 'https://domain3.example.com/path1',
-			cookieDomain: 'auth.example.com',
 		});
 	});
 });
