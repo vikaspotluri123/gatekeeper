@@ -7,6 +7,8 @@ declare namespace Express {
 		// When using `altGetUserFromRequest`, the cookie session might not be loaded
 		session?: {
 			cookie?: {
+				maxAge?: number;
+				expires?: Date;
 				domain: string;
 			};
 			next?: string;
