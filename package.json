@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "connect-session-knex": "^5.0.0",
-    "cookie": "^0.6.0",
+    "cookie": "^0.7.0",
     "cors": "^2.8.5",
     "debug": "^4.3.5",
     "express": "^4.20.0",
